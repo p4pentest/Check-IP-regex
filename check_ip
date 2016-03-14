@@ -1,0 +1,30 @@
+#!/bin/bash
+
+echo "Enter IP List filename with path"
+read file
+echo "Enter Site Protector Inventory List filename with path"
+read list
+
+l3=`wc -l $list| cut -d " " -f1`
+l=`wc -l $file| cut -d " " -f1`
+
+for (( i=1 ; i <= $l ; i++ ))
+do
+	ip=`sed -n ''$i'p' $file`
+	ff=0
+	for (( j=1 ; j <= $l3 ; j++ ))
+	do
+	       	regex=`sed -n ''$j'p' $list`
+		check=`echo $ip | grep -Po "$regex" | wc -l`
+		if [ "$check" != "0" ]
+		then
+			ff=1
+			break
+		fi
+	done
+		if [ "$ff" == "1" ]
+		then
+			echo $ip >> output_$file
+		fi
+done
+
